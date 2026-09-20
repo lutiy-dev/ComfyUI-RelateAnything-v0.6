@@ -1,0 +1,27 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/Maelic/RelateAnything/6b9c07c12ff47d4be17fa558b183023dcf829e61/deploy/export_onnx.py",
+    "sha256": "2f0c2511eb6a0d07f314e03ba18c96cdcc5bad70507911f7ec206dd7230f276e",
+    "local_inspected_source_matches": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Maelic/RelateAnything/6b9c07c12ff47d4be17fa558b183023dcf829e61/deploy/runtime.py",
+    "sha256": "3f846ec91d43fe75509782f91548a961c0e4df3a9a4f1caf7f02f8c38ca5979f",
+    "local_inspected_source_matches": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Maelic/RelateAnything/6b9c07c12ff47d4be17fa558b183023dcf829e61/deploy/postprocess.py",
+    "sha256": "7261029b4537a0fbcd4a05369895023b4795187c3ed984ca881c270c4ab26953",
+    "local_inspected_source_matches": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Maelic/RelateAnything/6b9c07c12ff47d4be17fa558b183023dcf829e61/deploy/build_predicate_bank.py",
+    "sha256": "d8934942db8dad459817e2be9a6fc2e8e1b073c0772f91e94c288ac0971c889f",
+    "local_inspected_source_matches": true
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Maelic/RelateAnything/6b9c07c12ff47d4be17fa558b183023dcf829e61/relsgg/scoring.py",
+    "sha256": "f17463248d42dba2ed31be810f5da136019e92f5092b6e88c5e6417ed2640421",
+    "local_inspected_source_matches": true
+  }
+]

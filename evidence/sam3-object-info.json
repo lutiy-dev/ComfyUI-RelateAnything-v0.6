@@ -1,0 +1,382 @@
+{
+  "LoadSAM3Model": {
+    "input": {
+      "required": {},
+      "optional": {
+        "precision": [
+          "COMBO",
+          {
+            "tooltip": "Model precision. auto: best for your GPU (bf16 on Ampere+, fp16 on Volta/Turing, fp32 on older).",
+            "default": "auto",
+            "multiselect": false,
+            "options": [
+              "auto",
+              "bf16",
+              "fp16",
+              "fp32"
+            ]
+          }
+        ],
+        "compile": [
+          "BOOLEAN",
+          {
+            "tooltip": "Enable torch.compile for faster inference. Model loading takes longer (pre-compiles all code paths), but inference is significantly faster on every run.",
+            "default": false
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [],
+      "optional": [
+        "precision",
+        "compile"
+      ]
+    },
+    "is_input_list": false,
+    "output": [
+      "SAM3_MODEL_CONFIG"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "sam3_model_config"
+    ],
+    "name": "LoadSAM3Model",
+    "display_name": "(Down)Load SAM3 Model",
+    "description": "",
+    "python_module": "custom_nodes.comfyui-sam3",
+    "category": "SAM3",
+    "output_node": false,
+    "has_intermediate_output": false,
+    "search_aliases": []
+  },
+  "SAM3Grounding": {
+    "input": {
+      "required": {
+        "sam3_model_config": [
+          "SAM3_MODEL_CONFIG",
+          {
+            "tooltip": "SAM3 model config from LoadSAM3Model node"
+          }
+        ],
+        "image": [
+          "IMAGE",
+          {
+            "tooltip": "Input image to perform segmentation on"
+          }
+        ],
+        "confidence_threshold": [
+          "FLOAT",
+          {
+            "tooltip": "Minimum confidence score to keep detections. Lower threshold (0.2) works better with SAM3's presence scoring",
+            "default": 0.2,
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.01
+          }
+        ]
+      },
+      "optional": {
+        "text_prompt": [
+          "STRING",
+          {
+            "tooltip": "Describe what to segment using natural language (e.g., 'person', 'cat', 'red car', 'shoes')",
+            "default": "",
+            "multiline": false
+          }
+        ],
+        "positive_boxes": [
+          "SAM3_BOXES_PROMPT",
+          {
+            "tooltip": "Optional box prompts to focus detection on specific regions. Connect from SAM3CombineBoxes node."
+          }
+        ],
+        "negative_boxes": [
+          "SAM3_BOXES_PROMPT",
+          {
+            "tooltip": "Optional box prompts to exclude specific regions from detection. Connect from SAM3CombineBoxes node."
+          }
+        ],
+        "max_detections": [
+          "INT",
+          {
+            "tooltip": "Maximum number of detections to return (-1 for all)",
+            "default": -1,
+            "min": -1,
+            "max": 100,
+            "step": 1
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "sam3_model_config",
+        "image",
+        "confidence_threshold"
+      ],
+      "optional": [
+        "text_prompt",
+        "positive_boxes",
+        "negative_boxes",
+        "max_detections"
+      ]
+    },
+    "is_input_list": false,
+    "output": [
+      "MASK",
+      "IMAGE",
+      "STRING",
+      "STRING"
+    ],
+    "output_is_list": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "output_name": [
+      "masks",
+      "visualization",
+      "boxes",
+      "scores"
+    ],
+    "name": "SAM3Grounding",
+    "display_name": "SAM3 Text Segmentation",
+    "description": "",
+    "python_module": "custom_nodes.comfyui-sam3",
+    "category": "SAM3/Grounding",
+    "output_node": false,
+    "has_intermediate_output": false,
+    "search_aliases": []
+  },
+  "LoadImage": {
+    "input": {
+      "required": {
+        "image": [
+          [
+            "01_mask_wall_left.png",
+            "03_mask_floor_steps.png",
+            "04_mask_poufs.png",
+            "05_mask_walls_shell.png",
+            "0ffeb86c9b0f5c166098b5785479c1ed_9da38acd-12a3-4f5f-a7e9-bef4d4be8cee.png",
+            "1.png",
+            "11 (08) (08).jpg",
+            "1_Interactive LightMix (1).png",
+            "1_Interactive LightMix.png",
+            "1_Interactive LightMix_View01.png",
+            "1_Interactive LightMix_View02.png",
+            "1_Interactive LightMix_View03.png",
+            "1_Interactive LightMix_View04.png",
+            "1_Interactive LightMix_View05.png",
+            "25f1532b-3d80-4060-b772-0de8f6c3bdf1.jfif",
+            "2_Interactive LightMix.png",
+            "3.jpg",
+            "3_Interactive LightMix (1).png",
+            "3_Interactive LightMix.png",
+            "470689024_18479648902031123_6422294420309209913_n.jpg",
+            "4_Interactive LightMix.png",
+            "767df7c41c7f4a3069a7038bb497190f_ed769e0d-35b9-4e68-97e2-2f1f3afa27ac.jpg",
+            "ChatGPT Image 17 мая 2026 г., 00_12_44.png",
+            "ComfyUI_00010_.png",
+            "ComfyUI_00063_.png",
+            "ComfyUI_temp_uxodg_00003_.png",
+            "ComfyUI_temp_uxodg_00004_.png",
+            "ComfyUI_temp_uxodg_00005_.png",
+            "ComfyUI_temp_uxodg_00006_.png",
+            "FRAME_02_FINAL_LED_GLOW_FIXED.png",
+            "Gemini_Generated_Image_7pouqv7pouqv7pou.png",
+            "Gemini_Generated_Image_8mxhl18mxhl18mxh.png",
+            "Gemini_Generated_Image_fs89igfs89igfs89.png",
+            "LTX_2.png",
+            "MASK_Grup_ID_View03.jpg",
+            "RA_DEMO_MASK.png",
+            "RA_DEMO_RENDER.png",
+            "Screenshot_stoune2.jpg",
+            "brekkie.jpg",
+            "cd36feb2-fdfe-4b95-81c5-f9a3ed921513.png",
+            "clipspace-mask-1788979980958.png",
+            "clipspace-mask-1788980020517.png",
+            "clipspace-mask-1788982148650.png",
+            "clipspace-mask-1789264495714.png",
+            "clipspace-mask-1789264570754.png",
+            "clipspace-mask-1789264627217.png",
+            "clipspace-mask-1789264716385.png",
+            "clipspace-mask-1789267808148.png",
+            "clipspace-paint-1788979980958.png",
+            "clipspace-paint-1788980020517.png",
+            "clipspace-paint-1788982148650.png",
+            "clipspace-paint-1789264495714.png",
+            "clipspace-paint-1789264570754.png",
+            "clipspace-paint-1789264627217.png",
+            "clipspace-paint-1789264716385.png",
+            "clipspace-paint-1789267808148.png",
+            "clipspace-painted-1788979980958.png",
+            "clipspace-painted-1788980020517.png",
+            "clipspace-painted-1788982148650.png",
+            "clipspace-painted-1789264495714.png",
+            "clipspace-painted-1789264570754.png",
+            "clipspace-painted-1789264627217.png",
+            "clipspace-painted-1789264716385.png",
+            "clipspace-painted-1789267808148.png",
+            "clipspace-painted-masked-1781286875838.png",
+            "clipspace-painted-masked-1788979980958.png",
+            "clipspace-painted-masked-1788980020517.png",
+            "clipspace-painted-masked-1788982148650.png",
+            "clipspace-painted-masked-1789264495714.png",
+            "clipspace-painted-masked-1789264570754.png",
+            "clipspace-painted-masked-1789264627217.png",
+            "clipspace-painted-masked-1789264716385.png",
+            "clipspace-painted-masked-1789267808148.png",
+            "example.png",
+            "example_image.jpg",
+            "find-the-best-settings-for-any-sdxl-model-workflow-v0-lf2cf23ake8h1.webp",
+            "groceries.jpg",
+            "icon.png",
+            "image.png",
+            "noon.png",
+            "photo_12_2026-09-10_00-38-12.jpg",
+            "photo_12_2026-09-10_00-38-12_upscayl_4x_ultramix-balanced-4x.png",
+            "photo_2026-08-26_22-06-14.jpg",
+            "photo_3_2026-09-10_00-37-17.jpg",
+            "photo_5_2026-09-10_00-37-01.jpg",
+            "plantpot.png",
+            "Изображение Codex 17 сент. 2026 г., 16_47_22.png",
+            "Изображение Codex 18 сент. 2026 г., 15_00_37.png",
+            "Изображение Codex 18 сент. 2026 г., 15_01_19.png",
+            "Изображение Codex 26 авг. 2026 г., 23_39_21.png"
+          ],
+          {
+            "image_upload": true
+          }
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "image"
+      ]
+    },
+    "is_input_list": false,
+    "output": [
+      "IMAGE",
+      "MASK"
+    ],
+    "output_is_list": [
+      false,
+      false
+    ],
+    "output_name": [
+      "IMAGE",
+      "MASK"
+    ],
+    "name": "LoadImage",
+    "display_name": "Load Image",
+    "description": "",
+    "python_module": "nodes",
+    "category": "image",
+    "output_node": false,
+    "has_intermediate_output": false,
+    "search_aliases": [
+      "load image",
+      "open image",
+      "import image",
+      "image input",
+      "upload image",
+      "read image",
+      "image loader"
+    ],
+    "essentials_category": "Basics"
+  },
+  "PreviewImage": {
+    "input": {
+      "required": {
+        "images": [
+          "IMAGE"
+        ]
+      },
+      "hidden": {
+        "prompt": "PROMPT",
+        "extra_pnginfo": "EXTRA_PNGINFO"
+      }
+    },
+    "input_order": {
+      "required": [
+        "images"
+      ],
+      "hidden": [
+        "prompt",
+        "extra_pnginfo"
+      ]
+    },
+    "is_input_list": false,
+    "output": [
+      "IMAGE"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "images"
+    ],
+    "name": "PreviewImage",
+    "display_name": "Preview Image",
+    "description": "Preview the images without saving them to the ComfyUI output directory.",
+    "python_module": "nodes",
+    "category": "image",
+    "output_node": true,
+    "has_intermediate_output": false,
+    "search_aliases": [
+      "preview",
+      "preview image",
+      "show image",
+      "view image",
+      "display image",
+      "image viewer"
+    ],
+    "essentials_category": "Basics"
+  },
+  "PreviewAny": {
+    "input": {
+      "required": {
+        "source": [
+          "*",
+          {}
+        ]
+      }
+    },
+    "input_order": {
+      "required": [
+        "source"
+      ]
+    },
+    "is_input_list": false,
+    "output": [
+      "STRING"
+    ],
+    "output_is_list": [
+      false
+    ],
+    "output_name": [
+      "STRING"
+    ],
+    "name": "PreviewAny",
+    "display_name": "Preview as Text",
+    "description": "Preview any input value as text.",
+    "python_module": "comfy_extras.nodes_preview_any",
+    "category": "utilities",
+    "output_node": true,
+    "has_intermediate_output": false,
+    "search_aliases": [
+      "preview",
+      "preview text",
+      "show output",
+      "inspect",
+      "debug",
+      "print value",
+      "show text"
+    ]
+  }
+}

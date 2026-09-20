@@ -1,0 +1,27 @@
+{
+  "relateanything.json": {
+    "url": "https://huggingface.co/maelic/relsgg-vits16plus/resolve/caf70d3af46478614209d86881a16e601d6bbf61/relateanything.json",
+    "size": 1634,
+    "sha256": "a5aa12ccd217337d6fdfff068943348e010ffec44035ee1b2a99d27085e34b14"
+  },
+  "predicate_bank.npz": {
+    "url": "https://huggingface.co/maelic/relsgg-vits16plus/resolve/caf70d3af46478614209d86881a16e601d6bbf61/predicate_bank.npz",
+    "size": 469258,
+    "sha256": "708f812d6579eab1be85b3378b79e376453c2d4f65b4fad9bcebb9f5bf05da06"
+  },
+  "calibration.json": {
+    "url": "https://huggingface.co/maelic/relsgg-vits16plus/resolve/caf70d3af46478614209d86881a16e601d6bbf61/calibration.json",
+    "size": 763,
+    "sha256": "ccf8570123d49233b32587b16224e5708442489ba17525d4b4664646346e3ecb"
+  },
+  "thresholds.json": {
+    "url": "https://huggingface.co/maelic/relsgg-vits16plus/resolve/caf70d3af46478614209d86881a16e601d6bbf61/thresholds.json",
+    "size": 54252,
+    "sha256": "12b2b667f8ecad0b98b7cb77074e25b54b4d0ea988f5ad7eb089504ec2bd400e"
+  },
+  "relateanything.onnx": {
+    "url": "https://huggingface.co/maelic/relsgg-vits16plus/resolve/caf70d3af46478614209d86881a16e601d6bbf61/relateanything.onnx",
+    "size": 207881414,
+    "sha256": "b8b6a047c5e0771a897a5015c2ffb09d8fe5e3ffa0651e1e61af0e8436a3617a"
+  }
+}

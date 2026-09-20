@@ -1,0 +1,4 @@
+# CPU runtime. No torch/transformers/relsgg/text encoder dependencies.
+# Tested with the already installed ONNX Runtime 1.29.0.
+# Do not install alongside onnxruntime-gpu/directml; see README first.
+onnxruntime==1.29.0

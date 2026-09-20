@@ -1,0 +1,88 @@
+{
+  "inputs": [
+    {
+      "name": "image",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        3,
+        448,
+        448
+      ]
+    },
+    {
+      "name": "boxes",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        "num_boxes",
+        4
+      ]
+    },
+    {
+      "name": "box_counts",
+      "type": "tensor(int64)",
+      "shape": [
+        "batch"
+      ]
+    },
+    {
+      "name": "W",
+      "type": "tensor(float)",
+      "shape": [
+        "num_predicates",
+        512
+      ]
+    },
+    {
+      "name": "alpha",
+      "type": "tensor(float)",
+      "shape": [
+        "num_predicates"
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "pred_logits",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        "num_pairs",
+        "num_predicates"
+      ]
+    },
+    {
+      "name": "pair_logits",
+      "type": "tensor(float)",
+      "shape": [
+        "batch",
+        "num_pairs"
+      ]
+    },
+    {
+      "name": "sub_idx",
+      "type": "tensor(int64)",
+      "shape": [
+        "batch",
+        "num_pairs"
+      ]
+    },
+    {
+      "name": "obj_idx",
+      "type": "tensor(int64)",
+      "shape": [
+        "batch",
+        "num_pairs"
+      ]
+    },
+    {
+      "name": "valid_mask",
+      "type": "tensor(bool)",
+      "shape": [
+        "batch",
+        "num_pairs"
+      ]
+    }
+  ]
+}

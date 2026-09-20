@@ -1,0 +1,57 @@
+{
+  "test": "real ONNX CPU inference on synthetic RGB and two regions",
+  "seconds_first_predict": 0.49422070002765395,
+  "result": {
+    "version": "0.6.0",
+    "relations": [
+      {
+        "subject_idx": 1,
+        "object_idx": 0,
+        "subject_source_idx": 1,
+        "object_source_idx": 0,
+        "predicate": "below",
+        "score": 0.38786017894744873
+      },
+      {
+        "subject_idx": 0,
+        "object_idx": 1,
+        "subject_source_idx": 0,
+        "object_source_idx": 1,
+        "predicate": "above",
+        "score": 0.3476504385471344
+      }
+    ],
+    "boxes_xyxy": [
+      [
+        4.0,
+        2.0,
+        24.0,
+        22.0
+      ],
+      [
+        70.0,
+        36.0,
+        90.0,
+        56.0
+      ]
+    ],
+    "source_indices": [
+      0,
+      1
+    ],
+    "vocabulary": [
+      "above",
+      "below"
+    ],
+    "score_threshold": 0.0,
+    "pair_weight": 1.0,
+    "calibration": {
+      "a": 0.5651,
+      "b": -1.9623
+    },
+    "geometry": "boxes only; masks converted to extents",
+    "model_path": "<local model directory>/relateanything.onnx"
+  },
+  "relations_text": "(region1 / SAM3 #1) --below [0.3879]--> (region0 / SAM3 #0)\n(region0 / SAM3 #0) --above [0.3477]--> (region1 / SAM3 #1)",
+  "limitations": "Not a SAM3 inference or full running-ComfyUI generation; no archviz quality claim."
+}

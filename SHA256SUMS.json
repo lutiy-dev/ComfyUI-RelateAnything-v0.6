@@ -1,0 +1,19 @@
+{
+  ".gitattributes": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c",
+  ".gitignore": "f0036916cbb823872b5e018bab61704a7dc2aa3cdfd6293512338a90f76a0312",
+  "__init__.py": "91a22a3be9aad1242d8d8ebd6107172471dd827fc331c00a1e73a85dfd3ea149",
+  "evidence/downloads.json": "dba658f6dd8a8cabd99eecc0e806d5fbeba4dde419f4d23fcbb6a4e8550ff270",
+  "evidence/official-sources.json": "8392fb5f6f1071e7be7673022a2a4dd9d86a8f1aafbb74326e79a5b36394e885",
+  "evidence/sam3-object-info.json": "6183df1485004c2939aa4bbcd9f16bd13ef000278903e35c713a89774489e729",
+  "evidence/session-signature.json": "fa26877f0701b9cd9504e6839258b79e47f0f21f962c2dd48b28ca73c14b3824",
+  "evidence/smoke-result.json": "977e3de6defd5b911c0234e4280d47d0509b1ad1cef19fb4342543b592d6d1fb",
+  "evidence/test-summary.json": "e8968c0d65ff607dd6114000cb46fd29d5c9d1fa91a8d27e15bff7ae13e3adbe",
+  "LICENSE.upstream": "b21ed74ddff430ae1739c7d008ff99fcbd57b41ee8bd7355b5ba3e3bd8b84e5c",
+  "NOTICE.md": "7896b036bff89c14450bc9e45e9483df47ccf2214688c08d7900677eacfe6540",
+  "README.md": "5a08fe0cd2d366c66c6655d72a10d4c5844e694eeb65fff9998e04aa8ff904c2",
+  "requirements.txt": "5e154fd2d55632788a15de86d040786a2b0b63963ebebc9fe4e1b9a9acbc4f24",
+  "scripts/download_models.py": "bd6aab9f6a2e247d0aee4874c14b57de1451680aa5640181b2c0ca762a0f57b3",
+  "tests/test_ra_v06.py": "937e4c18452785cb83174a11371b690e70fd3abc59f346ad771c076f22f23a87",
+  "workflows/RELATE_ANYTHING_ONNX_DIAGNOSTICS_v006.json": "947a889e661c6cd1da3861be803ca5a3117f683ae864d6d38d54927d61a43990",
+  "workflows/RELATE_ANYTHING_SAM3_ONNX_v006.json": "1b485116886a48259da7b8dc41520057826e9c1efce1ad7d96d190c3381e4e65"
+}
