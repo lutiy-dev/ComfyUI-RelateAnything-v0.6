@@ -1,4 +1,164 @@
-# ComfyUI-RelateAnything v0.6 — локальный ONNX + существующий SAM3
+# ComfyUI-RelateAnything v0.6
+
+**Определение отношений между объектами на изображении в ComfyUI: существующий SAM3 + локальная ONNX-модель RelateAnything.**
+
+Пакет принимает исходное изображение и выделенные объекты, затем выводит отношения между
+ними: «слева от», «выше», «позади», «внутри», «отражается в» и другие предикаты.
+Результат доступен как текст `relations_text` и структурированный `relations_json`.
+Названия предикатов в результате — на английском, как в официальном банке модели.
+
+Подходит для экспериментов с анализом архитектурных рендеров и пространственных связей.
+Предсказания требуют визуальной проверки: это помощник для анализа сцены, а не автоматическая
+сертификация правильности проекта. Изображение на выходе не перерисовывается.
+
+```text
+Исходный IMAGE ──→ SAM3 ──→ отдельные маски / боксы ──→ RA Regions
+      │                                                   │
+      └────────────────────→ RA ONNX Predict ←─────────────┘
+                                    │
+                          relations_text / relations_json
+```
+
+### Возможности
+
+- Использует ваш готовый SAM3 pipeline: `LoadSAM3Model` → `SAM3Grounding`.
+- Принимает список/батч отдельных масок, SAM3 boxes в JSON или готовый `RA_REGIONS`.
+- Работает локально через ONNX Runtime без загрузки PyTorch checkpoint RelateAnything.
+- Не требует установки `relsgg` или обновления Torch/transformers ради этой ONNX-ветки.
+- Проверяет модель и сопутствующие файлы по SHA256; имеет отдельный диагностический workflow.
+- Обрабатывает один RGB-кадр и до 32 регионов за запуск; нужны минимум два региона.
+
+**Ограничение:** опубликованный ONNX принимает bounding boxes. Маски SAM3 преобразуются
+в охватывающие прямоугольники; точный контур маски в модель не передаётся.
+CPU inference проверен, CUDA и полный SAM3 workflow на архитектурном рендере пока не проверены.
+
+[Установка](#installation) · [Первый запуск](#first-run) · [Решение проблем](#troubleshooting) · [Workflow-файлы](workflows)
+
+<a id="installation"></a>
+## Установка — Windows / ComfyUI Portable
+
+Нужны работающий ComfyUI, существующий SAM3 с нодами `LoadSAM3Model` / `SAM3Grounding`
+и доступ к интернету только для скачивания пакета и модели. Эта инструкция не устанавливает SAM3.
+Для прямого входа `RA_REGIONS` или JSON-боксов SAM3 не требуется.
+
+Все команды ниже выполняются в **PowerShell**. Пути на Q: и F: — пример проверенной
+portable-установки; замените их на свои. Используйте Python своего ComfyUI, а не случайный системный Python.
+
+### 1. Задайте пути
+
+```powershell
+$raPortable = 'Q:\AI_ArchViz\ComfyUI_windows_portable'
+$raPython = Join-Path $raPortable 'python_embeded\python.exe'
+$raNodeDir = Join-Path $raPortable 'ComfyUI\custom_nodes\ComfyUI-RelateAnything-ONNX-v06'
+$raModelDir = 'F:\ComfyUI\models\relateanything\relsgg-vits16plus'
+```
+
+### 2. Скачайте ноды
+
+```powershell
+git clone https://github.com/lutiy-dev/ComfyUI-RelateAnything-v0.6.git $raNodeDir
+```
+
+Без Git: нажмите **Code → Download ZIP**, распакуйте и переименуйте папку в
+`ComfyUI-RelateAnything-ONNX-v06`, затем поместите её в `ComfyUI\custom_nodes`.
+Файл `__init__.py` должен лежать непосредственно внутри этой папки, без лишнего уровня вложенности.
+Если папка v0.6 уже существует, повторно клонировать её не нужно.
+Старую папку `ComfyUI-RelateAnything` можно сохранить: у v0.6 отдельные имена нод.
+
+### 3. Проверьте ONNX Runtime
+
+```powershell
+& $raPython -c "import onnxruntime as ort; import numpy; import cv2; print('ONNX Runtime:', ort.__version__); print('Providers:', ort.get_available_providers())"
+```
+
+Если команда работает и есть `CPUExecutionProvider`, переходите к шагу 4.
+На исходной проверенной машине зависимости уже были установлены.
+
+Если отсутствует именно **onnxruntime**, сначала посмотрите план установки:
+
+```powershell
+& $raPython -m pip install --dry-run -r (Join-Path $raNodeDir 'requirements.txt')
+```
+
+Если план не заменяет рабочие библиотеки, установите:
+
+```powershell
+& $raPython -m pip install -r (Join-Path $raNodeDir 'requirements.txt')
+```
+
+В requirements только CPU-вариант `onnxruntime==1.29.0`. Не устанавливайте его поверх
+работающего `onnxruntime-gpu` / DirectML. NumPy и OpenCV используются из существующего
+ComfyUI; при ошибке их импорта сначала проверьте, выбран ли правильный Python.
+
+### 4. Скачайте модель
+
+```powershell
+& $raPython (Join-Path $raNodeDir 'scripts\download_models.py') --output $raModelDir
+```
+
+Загрузчик скачает с официального Hugging Face и проверит три файла:
+
+```text
+relsgg-vits16plus/
+├── relateanything.onnx
+├── relateanything.json
+└── predicate_bank.npz
+```
+
+Сама ONNX-модель занимает около 208 МБ. Все три файла должны лежать рядом.
+`model.pth` и `text_student.pt` для этой ветки не нужны. Существующие файлы с другой
+контрольной суммой загрузчик не перезаписывает.
+
+### 5. Перезапустите ComfyUI
+
+Дождитесь завершения текущих генераций и полностью перезапустите ComfyUI.
+Новые ноды находятся в категории **RelateAnything / ONNX v0.6**.
+
+<a id="first-run"></a>
+## Первый запуск
+
+1. Перетащите в ComfyUI файл
+   [RELATE_ANYTHING_ONNX_DIAGNOSTICS_v006.json](workflows/RELATE_ANYTHING_ONNX_DIAGNOSTICS_v006.json).
+   В **RA · Load Local ONNX · v0.6** укажите полный путь к `relateanything.onnx`.
+   Выберите `CPUExecutionProvider` и запустите. В текстовом просмотре должно быть
+   `inference_ready: true`. Это проверка загрузки, ещё не предсказание отношений.
+2. Откройте [основной SAM3 workflow](workflows/RELATE_ANYTHING_SAM3_ONNX_v006.json).
+   В нём отдельно проверьте путь к ONNX — настройки другого workflow автоматически не переносятся.
+3. В **Load Image** выберите исходный рендер. В **SAM3Grounding** задайте, что искать,
+   например `window`. На изображении должны находиться минимум два подходящих объекта.
+4. Оставьте стартовые значения: SAM3 confidence `0.2`, min_area `20`, max_regions `32`,
+   topk `20`, score_threshold `0.4`, pair_weight `1.0`.
+5. Запустите workflow. Проверьте найденные SAM3 объекты в preview, количество регионов
+   в **REGIONS DEBUG**, затем прочитайте **RELATIONS TEXT**.
+
+Пример формата результата:
+
+```text
+(region0 / SAM3 #0) --above [0.3477]--> (region1 / SAM3 #1)
+```
+
+Это реальная строка технического теста при пороге **0.0**; при стандартном пороге 0.4
+она отфильтруется. Индексы нумеруются с нуля и сопоставляются с координатами в debug/JSON.
+Для собственного графа всегда подавайте в Predict исходный IMAGE, а не цветную визуализацию масок.
+
+<a id="troubleshooting"></a>
+## Частые вопросы и ошибки
+
+| Ситуация | Что проверить |
+|---|---|
+| Ноды v0.6 отмечены UNKNOWN | Путь `custom_nodes/.../__init__.py`, полный перезапуск и сообщение об импорте в консоли ComfyUI. |
+| Не найдены SAM3-ноды | Нужен существующий пакет с `LoadSAM3Model` и `SAM3Grounding`; этот репозиторий содержит только RA-ветку. |
+| `inference_ready: false` | Прочитайте `blocked_reason`: нужны три файла одной закреплённой ревизии. Запустите диагностический workflow. |
+| Найден один регион или ни одного | Проверьте SAM3 prompt, confidence, preview и min_area. Нужны отдельные instance masks, не одна объединённая маска. |
+| Размеры IMAGE и MASK различаются | Подайте изображение и маски одного кадра в одинаковом разрешении. Автоматическое масштабирование масок не выполняется. |
+| Предикат отсутствует в банке | Используйте точное имя из `available_predicates` в диагностике, например `to the left of`. |
+| `No relations passed the selected threshold` | Inference завершился, но ни одно отношение не прошло выбранный порог. Проверьте регионы и словарь; снижение порога допустимо как диагностический эксперимент. |
+| CUDA provider недоступен | Выберите проверенный `CPUExecutionProvider`; менять Torch или CUDA ради первого запуска не требуется. |
+
+---
+
+## Технические сведения и подтверждение проверки
+
 
 Подготовлено и проверено 20.09.2026. Это самостоятельная ONNX-обёртка: она не импортирует
 `relsgg`, `torch` или `transformers`, не читает `model.pth` / `text_student.pt`, не скачивает
