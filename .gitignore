@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+models/
+test-results/
+upstream-reference/
+*.onnx
+*.pth
+*.pt
+*.npz
+*.part
